@@ -1,0 +1,26 @@
+---
+- name: Create output directory for device
+  file:
+    path: "{{save_dir}}"
+    state: directory
+
+- name: Push Configuration to devices (commit check)
+  juniper_junos_config:
+    provider: "{{credentials.junos}}"
+    load: "{{commit_mode | default('merge')}}"
+    src: "{{junos_conf}}"
+    diff: true
+    diffs_file: "{{save_dir}}/config-diff.log"
+    check: true
+    commit: false
+
+- name: Pushing config, doing commit check and downloading candidate config... please wait
+  juniper_junos_config:
+    load: "{{commit_mode | default('merge')}}"
+    provider: "{{ credentials.junos }}"
+    src: "{{junos_conf}}"
+    retrieve: 'candidate'
+    diff: false
+    check: true
+    commit: false
+    dest: "{{save_dir}}/candidate-rendered-{{ inventory_hostname }}.conf"

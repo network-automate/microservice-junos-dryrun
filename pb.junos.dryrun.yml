@@ -1,0 +1,13 @@
+- name: Deploy configuration
+  hosts: all
+  connection: local
+  gather_facts: no
+
+  pre_tasks:
+    - include_vars: "{{ playbook_dir }}/repository.cfg"
+
+  roles:
+    - Juniper.junos
+    - config-deploy-core
+
+
